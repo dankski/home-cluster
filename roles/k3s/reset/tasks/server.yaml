@@ -1,0 +1,6 @@
+---
+
+- name: Uninstall K3s On Server
+  ansible.builtin.shell:  bash /usr/local/bin/k3s-uninstall.sh
+  tags: server
+

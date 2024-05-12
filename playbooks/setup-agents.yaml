@@ -1,0 +1,29 @@
+---
+
+- name: Read Server Token
+  hosts: server
+  remote_user: "{{ nuser }}"
+  gather_facts: true
+
+  tasks:
+    - name: Read Server API Token
+      become: true
+      ansible.builtin.shell: cat /var/lib/rancher/k3s/server/node-token
+      register: server_token
+
+    - name: Store Node-Token from master
+      set_fact:
+        k3s_token: "{{ server_token.stdout }}"
+
+    - name: Add token to shared dummy hosts
+      add_host:
+        name: "var_holder"
+        k3s_token: "{{ k3s_token }}"
+
+
+- name: Setup Agents
+  hosts: agent
+  remote_user: "{{ nuser }}"
+  gather_facts: true
+  roles:
+    - { role: k3s/agents, server_host_var: "{{ groups['server'][0] }}", server_token_var: "{{ hostvars['var_holder']['k3s_token'] }}", agent_name_var: "a{{ groups['agent'].index(inventory_hostname) }}-k3s", agent_host_var: "{{ inventory_hostname }}" }

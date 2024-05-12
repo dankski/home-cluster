@@ -1,0 +1,24 @@
+---
+
+- name: Reset Server(s)
+  hosts: server
+  remote_user: "{{ nuser }}"
+  gather_facts: true
+  tasks:
+    - name: Server Reset Role
+      include_role:
+        name: k3s/reset
+        tasks_from: server.yaml
+      tags: server
+
+
+- name: Reset Agent(s)
+  hosts: agent
+  remote_user: "{{ nuser }}"
+  gather_facts: true
+  tasks:
+    - name: Agent Reset Role
+      include_role:
+        name: k3s/reset
+        tasks_from: agent.yaml
+      tags: agent

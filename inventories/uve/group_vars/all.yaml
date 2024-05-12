@@ -1,0 +1,5 @@
+---
+nuser: vmadmin
+
+k3s_version: "v1.29.4+k3s1"
+
